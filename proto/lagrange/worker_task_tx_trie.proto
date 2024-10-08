@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package lagrange.worker_task_tx_trie;
+
+import "google/protobuf/empty.proto";
+
+message WorkerTask {
+  message WorkerTaskType {
+    message ProofKind {
+      message Transactions {
+        uint64 block_number = 1;
+        uint64 tx_start = 2;
+        uint64 tx_end = 3;
+      }
+
+      message ProofKey {
+        enum Experiment {
+          INCLUSION = 0;
+          DIGEST_TRANSLATION = 1;
+          BUCKETING = 2;
+          BLSBUCKETING = 3;
+        }
+        message PublicParams {
+          Experiment experiment = 1;
+          uint32 log_max_capacity = 2;
+        }
+        message Inputs {
+          Experiment experiment = 1;
+          uint32 log_max_capacity = 2;
+          uint32 log_subset_size = 3;
+        }
+        message Compute {
+          string query_id = 1;
+          uint64 level = 2;
+          uint64 index = 3;
+        }
+
+        oneof Key {
+          // Public params and inputs.
+          PublicParams public_params = 1;
+          // Inputs(data).
+          Inputs inputs = 2;
+          // Compute proof key.
+          Compute compute = 3;
+        }
+      }
+
+      message Intermediate {
+        uint64 block_number = 1;
+        string node_id = 2;
+        repeated ProofKey proof_keys = 3;
+      }
+
+      oneof ProofKind {
+        Transactions transactions = 1;
+
+        Intermediate intermediate = 2;
+      }
+    }
+
+    message BlockProof {
+      ProofKind block_proof = 1;
+    }
+    message BlockRangeProof {
+      ProofKind block_proof = 1;
+    }
+
+    oneof Type {
+      BlockProof block_proof = 1;
+
+      BlockRangeProof block_range_proof = 2;
+    }
+  }
+
+  message Computation {
+    message SumOfGasFees {
+      string dest_address = 1;
+    }
+    oneof Computation {
+      SumOfGasFees sum_of_gas_fees = 1;
+    }
+  }
+
+  WorkerTaskType task_type = 1;
+
+  Computation computation = 2;
+}

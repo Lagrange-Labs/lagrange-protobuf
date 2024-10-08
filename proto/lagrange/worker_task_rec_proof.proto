@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package lagrange.worker_task_rec_proof;
+
+import "google/protobuf/empty.proto";
+
+message WorkerTask {
+  enum Experiment {
+    INCLUSION = 0;
+    DIGEST_TRANSLATION = 1;
+    BUCKETING = 2;
+    BLS_BUCKETING = 3;
+  }
+
+  message WorkerTaskType {
+    message LevelAndIndex {
+      uint64 level = 1;
+      uint64 index = 2;
+    }
+    message Prepare {
+      uint32 log_max_capacity = 1;
+      uint32 log_subset_size = 2;
+      map<uint64, google.protobuf.Empty> leaves_indices = 3;
+    }
+    message Compute {
+      LevelAndIndex level_and_index = 1;
+      uint32 log_max_capacity = 2;
+      uint32 log_subset_size = 3;
+    }
+    message BatchCompute {
+      repeated LevelAndIndex level_and_index = 1;
+      uint32 log_max_capacity = 2;
+      uint32 log_subset_size = 3;
+    }
+
+    oneof TaskType {
+      Prepare prepare = 1;
+      Compute compute = 2;
+      BatchCompute batch_compute = 3;
+    }
+  }
+
+  WorkerTaskType task_type = 1;
+  Experiment experiment = 2;
+}

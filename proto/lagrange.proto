@@ -1,0 +1,26 @@
+syntax = "proto3";
+package lagrange;
+
+import "lagrange/worker_task_erc20_query.proto";
+import "lagrange/worker_task_preprocessing.proto";
+import "lagrange/worker_task_rec_proof.proto";
+import "lagrange/worker_task_storage_groth16.proto";
+import "lagrange/worker_task_storage_preprocess.proto";
+import "lagrange/worker_task_storage_query.proto";
+import "lagrange/worker_task_tx_trie.proto";
+import "lagrange/worker_task_v1_groth16.proto";
+import "lagrange/worker_task_v1_query.proto";
+
+message TaskType {
+  oneof TaskType {
+    lagrange.worker_task_tx_trie.WorkerTask tx_trie = 1;
+    lagrange.worker_task_rec_proof.WorkerTask rec_proof = 2;
+    lagrange.worker_task_storage_preprocess.WorkerTask storage_processing = 3;
+    lagrange.worker_task_storage_query.WorkerTask storage_query = 4;
+    lagrange.worker_task_erc20_query.WorkerTask erc20_query = 5;
+    lagrange.worker_task_groth_16.WorkerTask storage_groth16 = 6;
+    lagrange.worker_task_preprocessing.WorkerTask preprocessing = 7;
+    lagrange.worker_task_v1_query.WorkerTask v1_query = 8;
+    lagrange.worker_task_v1_groth16.WorkerTask v1_groth16 = 9;
+  }
+}
