@@ -26,6 +26,49 @@ message TaskType {
   }
 }
 
+message MessageEnvelope {
+  message RoutingKey {
+    string domain = 1;
+    uint64 priority = 2;
+  }
+  /// Query id is unique for each query and shared between all its tasks
+  string query_id = 1;
+
+  /// Task id is unique for each task and helps to map replies to tasks
+  string task_id = 2;
+
+  /// Task id referenced in the DB tasks table
+  /// TODO: optional?
+  int32 db_task_id = 3;
+
+  /// Estimate how long it takes this task to finish.
+  /// This includes may factors like: redis queue current length, workers count, parallel queries count, etc.
+  /// Ideally assigned by an "intelligent" algorithm. Not important for now though.
+  /// Might become relevant then we have clients waiting for results, and we can process queries
+  /// relatively fast.
+  uint64 rtt = 4;
+
+  /// How much work prover has to do
+  uint64 gas = 5;
+
+  /// How and where to route the message.
+  RoutingKey routing_key = 6;
+
+  /// Details of the task to be executed.
+  TaskType inner = 7;
+}
+
+message DownstreamPayload {
+  oneof downstream_payload {
+    MessageEnvelope todo = 1;
+  }
+}
+
+service WorkersService {
+  // A bidirectional streaming RPC between GW<->Worker
+  rpc WorkerToGw(stream ReplyType) returns (stream DownstreamPayload) {}
+}
+
 message ReplyType {
   enum ProofCathegory {
     PROOF_CATHEGORY_UNSPECIFIED = 0;
