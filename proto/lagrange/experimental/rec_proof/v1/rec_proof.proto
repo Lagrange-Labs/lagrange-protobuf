@@ -1,15 +1,16 @@
 syntax = "proto3";
 
-package lagrange.experimental.rec_proof;
+package lagrange.experimental.rec_proof.v1;
 
 import "google/protobuf/empty.proto";
 
 message WorkerTask {
   enum Experiment {
-    INCLUSION = 0;
-    DIGEST_TRANSLATION = 1;
-    BUCKETING = 2;
-    BLS_BUCKETING = 3;
+    EXPERIMENT_UNSPECIFIED = 0;
+    EXPERIMENT_INCLUSION = 1;
+    EXPERIMENT_DIGEST_TRANSLATION = 2;
+    EXPERIMENT_BUCKETING = 3;
+    EXPERIMENT_BLS_BUCKETING = 4;
   }
 
   message WorkerTaskType {
@@ -33,7 +34,7 @@ message WorkerTask {
       uint32 log_subset_size = 3;
     }
 
-    oneof TaskType {
+    oneof task_type {
       Prepare prepare = 1;
       Compute compute = 2;
       BatchCompute batch_compute = 3;

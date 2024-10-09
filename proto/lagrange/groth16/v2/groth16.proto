@@ -1,23 +1,33 @@
 syntax = "proto3";
 
-package lagrange.v0.groth16;
+package lagrange.groth16.v2;
 
 message WorkerTask {
+  // TODO: unify with another one
   message ProofKey {
     message Row {
       string query_id = 1;
       uint64 block_number = 2;
       string row_key_id = 3;
     }
+
     message Index {
       string query_id = 1;
       uint64 block_number = 2;
     }
+
     message Revelation {
       string query_id = 1;
     }
-  }
-  uint64 chain_id = 1;
 
+    oneof key {
+      Row row = 1;
+      Index index = 2;
+      Revelation revelation = 3;
+    }
+  }
+
+  uint64 chain_id = 1;
+  ProofKey revelation_proof_location = 2;
   bytes revelation_proof = 3;
 }
