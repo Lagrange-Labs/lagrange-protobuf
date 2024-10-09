@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.v0.erc20_query;
+package lagrange.erc20_query.v1;
 
 message WorkerTask {
   message Position {
@@ -27,7 +27,7 @@ message WorkerTask {
         bytes child_proof = 5;
       }
 
-      oneof Data {
+      oneof data {
         StorageLeafInput storage_leaf = 1;
         StorageBranchInput storage_branch = 2;
       }
@@ -48,7 +48,7 @@ message WorkerTask {
       bytes block_db_proof = 7;
     }
 
-    oneof Type {
+    oneof type {
       StorageData storage_entry = 1;
       QueryStateData state_entry = 2;
       QueryBlockData blocks_db = 3;

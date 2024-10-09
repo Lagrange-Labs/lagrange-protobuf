@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.v1.preprocessing;
+package lagrange.preprocessing.v2;
 
 message WorkerTask {
   message WorkerTaskType {
@@ -21,7 +21,7 @@ message WorkerTask {
         repeated bytes child_proofs = 5;
       }
 
-      oneof Data {
+      oneof data {
         MptProofLeafData mpt_proof_leaf_data = 1;
         MptProofBranchData mpt_proof_branch_data = 2;
       }
@@ -49,7 +49,7 @@ message WorkerTask {
         bytes right_child_proof = 5;
       }
 
-      oneof Data {
+      oneof data {
         StorageDbLeafData storage_db_leaf_data = 1;
         StorageDbBranchData storage_db_branch_data = 2;
       }
@@ -86,7 +86,7 @@ message WorkerTask {
         bytes right_proof = 3;
       }
 
-      oneof Data {
+      oneof data {
         StateDbLeafData state_db_leaf_data = 1;
         StateDbBranchData state_db_branch_data = 2;
       }
@@ -107,7 +107,7 @@ message WorkerTask {
       bytes previous_leaf_proof = 6;
     }
 
-    oneof Type {
+    oneof type {
       Mpt mpt = 1;
       StorageDb storage_db = 2;
       LengthExtract length_extract = 3;

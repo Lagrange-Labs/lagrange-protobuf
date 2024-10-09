@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.v0.query;
+package lagrange.query.v1;
 
 message WorkerTask {
   message WorkerTaskType {
@@ -37,7 +37,7 @@ message WorkerTask {
           bool right_is_unproven = 3;
         }
 
-        oneof Input {
+        oneof input {
           Leaf leaf = 1;
           FullBranch full_branch = 2;
           PartialBranch partial_branch = 3;
@@ -67,7 +67,7 @@ message WorkerTask {
     }
     message QueryBlockData {
       message BlockNodeLeafInfo {
-        oneof Info {
+        oneof info {
           uint64 state_proof = 1;
           Position aggregation = 2;
         }
@@ -88,7 +88,7 @@ message WorkerTask {
         bytes right_child_proof = 5;
       }
 
-      oneof Data {
+      oneof data {
         PartialNodeBlockData partial_node_block_data = 1;
         FullNodeBlockData full_node_block_data = 2;
       }
@@ -104,7 +104,7 @@ message WorkerTask {
       bytes block_db_proof = 8;
     }
 
-    oneof TaskType {
+    oneof task_type {
       StorageData storage_entry = 1;
       QueryStateData query_state_data = 2;
       QueryBlockData query_block_data = 3;

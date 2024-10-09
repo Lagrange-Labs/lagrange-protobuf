@@ -1,8 +1,6 @@
 syntax = "proto3";
 
-package lagrange.experimental.tx_trie;
-
-import "google/protobuf/empty.proto";
+package lagrange.experimental.tx_trie.v1;
 
 message WorkerTask {
   message WorkerTaskType {
@@ -15,10 +13,11 @@ message WorkerTask {
 
       message ProofKey {
         enum Experiment {
-          INCLUSION = 0;
-          DIGEST_TRANSLATION = 1;
-          BUCKETING = 2;
-          BLSBUCKETING = 3;
+          EXPERIMENT_UNSPECIFIED = 0;
+          EXPERIMENT_INCLUSION = 1;
+          EXPERIMENT_DIGEST_TRANSLATION = 2;
+          EXPERIMENT_BUCKETING = 3;
+          EXPERIMENT_BLSBUCKETING = 4;
         }
         message PublicParams {
           Experiment experiment = 1;
@@ -35,7 +34,7 @@ message WorkerTask {
           uint64 index = 3;
         }
 
-        oneof Key {
+        oneof key {
           // Public params and inputs.
           PublicParams public_params = 1;
           // Inputs(data).
@@ -51,7 +50,7 @@ message WorkerTask {
         repeated ProofKey proof_keys = 3;
       }
 
-      oneof ProofKind {
+      oneof proof_kind {
         Transactions transactions = 1;
 
         Intermediate intermediate = 2;
@@ -65,7 +64,7 @@ message WorkerTask {
       ProofKind block_proof = 1;
     }
 
-    oneof Type {
+    oneof type {
       BlockProof block_proof = 1;
 
       BlockRangeProof block_range_proof = 2;
@@ -76,7 +75,7 @@ message WorkerTask {
     message SumOfGasFees {
       string dest_address = 1;
     }
-    oneof Computation {
+    oneof computation {
       SumOfGasFees sum_of_gas_fees = 1;
     }
   }

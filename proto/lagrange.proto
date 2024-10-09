@@ -2,34 +2,35 @@ syntax = "proto3";
 
 package lagrange;
 
-import "lagrange/experimental/rec_proof.proto";
-import "lagrange/experimental/tx_trie.proto";
-import "lagrange/v0/erc20_query.proto";
-import "lagrange/v0/groth16.proto";
-import "lagrange/v0/preprocessing.proto";
-import "lagrange/v0/query.proto";
-import "lagrange/v1/groth16.proto";
-import "lagrange/v1/preprocessing.proto";
-import "lagrange/v1/query.proto";
+import "lagrange/erc20_query/v1/erc20_query.proto";
+import "lagrange/experimental/rec_proof/v1/rec_proof.proto";
+import "lagrange/experimental/tx_trie/v1/tx_trie.proto";
+import "lagrange/groth16/v1/groth16.proto";
+import "lagrange/groth16/v2/groth16.proto";
+import "lagrange/preprocessing/v1/preprocessing.proto";
+import "lagrange/preprocessing/v2/preprocessing.proto";
+import "lagrange/query/v1/query.proto";
+import "lagrange/query/v2/query.proto";
 
 message TaskType {
-  oneof TaskType {
-    lagrange.experimental.tx_trie.WorkerTask tx_trie = 1;
-    lagrange.experimental.rec_proof.WorkerTask rec_proof = 2;
-    lagrange.v0.preprocessing.WorkerTask storage_process = 3;
-    lagrange.v0.query.WorkerTask storage_query = 4;
-    lagrange.v0.erc20_query.WorkerTask erc20_query = 5;
-    lagrange.v0.groth16.WorkerTask storage_groth16 = 6;
-    lagrange.v1.preprocessing.WorkerTask v1_preprocessing = 7;
-    lagrange.v1.query.WorkerTask v1_query = 8;
-    lagrange.v1.groth16.WorkerTask v1_groth16 = 9;
+  oneof task_type {
+    lagrange.experimental.tx_trie.v1.WorkerTask tx_trie = 1;
+    lagrange.experimental.rec_proof.v1.WorkerTask rec_proof = 2;
+    lagrange.preprocessing.v1.WorkerTask storage_process = 3;
+    lagrange.query.v1.WorkerTask storage_query = 4;
+    lagrange.erc20_query.v1.WorkerTask erc20_query = 5;
+    lagrange.groth16.v1.WorkerTask storage_groth16 = 6;
+    lagrange.preprocessing.v2.WorkerTask v1_preprocessing = 7;
+    lagrange.query.v2.WorkerTask v1_query = 8;
+    lagrange.groth16.v2.WorkerTask v1_groth16 = 9;
   }
 }
 
 message ReplyType {
-  enum ProofCategory {
-    INDEXING = 0;
-    QUERYING = 1;
+  enum ProofCathegory {
+    PROOF_CATHEGORY_UNSPECIFIED = 0;
+    PROOF_CATHEGORY_INDEXING = 1;
+    PROOF_CATHEGORY_QUERYING = 2;
   }
   message KeyedPayload {
     map<string, bytes> payload = 1;
@@ -39,7 +40,7 @@ message ReplyType {
 
     KeyedPayload proof = 2;
 
-    ProofCategory proof_type = 3;
+    ProofCathegory proof_type = 3;
   }
 
   message StoragePreprocess {
@@ -47,9 +48,9 @@ message ReplyType {
     WorkerReply worker_reply = 2;
   }
 
-  oneof ReplyType {
-    lagrange.experimental.tx_trie.WorkerReply tx_trie = 1;
-    lagrange.experimental.rec_proof.WorkerReply rec_proof = 2;
+  oneof reply_type {
+    lagrange.experimental.tx_trie.v1.WorkerReply tx_trie = 1;
+    lagrange.experimental.rec_proof.v1.WorkerReply rec_proof = 2;
     StoragePreprocess storage_preprocess = 3;
     WorkerReply storage_query = 4;
     WorkerReply erc20_query = 5;

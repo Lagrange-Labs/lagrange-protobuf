@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.v1.query;
+package lagrange.query.v2;
 
 message WorkerTask {
   message PlaceHolderLgn {
@@ -22,7 +22,7 @@ message WorkerTask {
       string query_id = 1;
     }
 
-    oneof Key {
+    oneof key {
       Row row = 1;
       Index index = 2;
       Revelation revelation = 3;
@@ -50,7 +50,7 @@ message WorkerTask {
       QueryInput query_input = 2;
     }
 
-    oneof Type {
+    oneof type {
       QueryInput query_input = 1;
     }
   }

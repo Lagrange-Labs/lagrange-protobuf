@@ -2,6 +2,12 @@ version: v2
 modules:
   - path: proto
     name: buf.build/lagrange/dev
+lint:
+  ignore_only:
+    PACKAGE_DIRECTORY_MATCH:
+      - proto/lagrange.proto
+    PACKAGE_VERSION_SUFFIX:
+      - proto/lagrange.proto
 breaking:
   use:
     - FILE
