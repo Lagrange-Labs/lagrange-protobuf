@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.worker_task_storage_preprocess;
+package lagrange.v1.preprocessing;
 
 message WorkerTask {
   message WorkerTaskType {

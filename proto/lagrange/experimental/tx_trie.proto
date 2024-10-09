@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.worker_task_tx_trie;
+package lagrange.experimental.tx_trie;
 
 import "google/protobuf/empty.proto";
 
@@ -84,4 +84,15 @@ message WorkerTask {
   WorkerTaskType task_type = 1;
 
   Computation computation = 2;
+}
+
+message WorkerReply {
+  // Query id this reply is for.
+  string query_id = 1;
+
+  // Task id this reply is for.
+  string task_id = 2;
+
+  // URI where the proof is stored.
+  string data_uri = 3;
 }

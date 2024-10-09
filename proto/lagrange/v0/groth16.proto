@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.worker_task_groth_16;
+package lagrange.v0.groth16;
 
 message WorkerTask {
   message ProofKey {

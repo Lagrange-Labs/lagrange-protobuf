@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.worker_task_v1_query;
+package lagrange.v1.query;
 
 message WorkerTask {
   message PlaceHolderLgn {

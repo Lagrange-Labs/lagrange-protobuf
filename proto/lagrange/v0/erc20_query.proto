@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.worker_task_erc20_query;
+package lagrange.v0.erc20_query;
 
 message WorkerTask {
   message Position {

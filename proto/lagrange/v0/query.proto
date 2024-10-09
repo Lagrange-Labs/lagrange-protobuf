@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.worker_task_storage_query;
+package lagrange.v0.query;
 
 message WorkerTask {
   message WorkerTaskType {

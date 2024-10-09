@@ -1,26 +1,61 @@
 syntax = "proto3";
+
 package lagrange;
 
-import "lagrange/worker_task_erc20_query.proto";
-import "lagrange/worker_task_preprocessing.proto";
-import "lagrange/worker_task_rec_proof.proto";
-import "lagrange/worker_task_storage_groth16.proto";
-import "lagrange/worker_task_storage_preprocess.proto";
-import "lagrange/worker_task_storage_query.proto";
-import "lagrange/worker_task_tx_trie.proto";
-import "lagrange/worker_task_v1_groth16.proto";
-import "lagrange/worker_task_v1_query.proto";
+import "lagrange/experimental/rec_proof.proto";
+import "lagrange/experimental/tx_trie.proto";
+import "lagrange/v0/erc20_query.proto";
+import "lagrange/v0/groth16.proto";
+import "lagrange/v0/preprocessing.proto";
+import "lagrange/v0/query.proto";
+import "lagrange/v1/groth16.proto";
+import "lagrange/v1/preprocessing.proto";
+import "lagrange/v1/query.proto";
 
 message TaskType {
   oneof TaskType {
-    lagrange.worker_task_tx_trie.WorkerTask tx_trie = 1;
-    lagrange.worker_task_rec_proof.WorkerTask rec_proof = 2;
-    lagrange.worker_task_storage_preprocess.WorkerTask storage_processing = 3;
-    lagrange.worker_task_storage_query.WorkerTask storage_query = 4;
-    lagrange.worker_task_erc20_query.WorkerTask erc20_query = 5;
-    lagrange.worker_task_groth_16.WorkerTask storage_groth16 = 6;
-    lagrange.worker_task_preprocessing.WorkerTask preprocessing = 7;
-    lagrange.worker_task_v1_query.WorkerTask v1_query = 8;
-    lagrange.worker_task_v1_groth16.WorkerTask v1_groth16 = 9;
+    lagrange.experimental.tx_trie.WorkerTask tx_trie = 1;
+    lagrange.experimental.rec_proof.WorkerTask rec_proof = 2;
+    lagrange.v0.preprocessing.WorkerTask storage_process = 3;
+    lagrange.v0.query.WorkerTask storage_query = 4;
+    lagrange.v0.erc20_query.WorkerTask erc20_query = 5;
+    lagrange.v0.groth16.WorkerTask storage_groth16 = 6;
+    lagrange.v1.preprocessing.WorkerTask v1_preprocessing = 7;
+    lagrange.v1.query.WorkerTask v1_query = 8;
+    lagrange.v1.groth16.WorkerTask v1_groth16 = 9;
+  }
+}
+
+message ReplyType {
+  enum ProofCategory {
+    INDEXING = 0;
+    QUERYING = 1;
+  }
+  message KeyedPayload {
+    map<string, bytes> payload = 1;
+  }
+  message WorkerReply {
+    uint64 chain_id = 1;
+
+    KeyedPayload proof = 2;
+
+    ProofCategory proof_type = 3;
+  }
+
+  message StoragePreprocess {
+    uint64 p = 1;
+    WorkerReply worker_reply = 2;
+  }
+
+  oneof ReplyType {
+    lagrange.experimental.tx_trie.WorkerReply tx_trie = 1;
+    lagrange.experimental.rec_proof.WorkerReply rec_proof = 2;
+    StoragePreprocess storage_preprocess = 3;
+    WorkerReply storage_query = 4;
+    WorkerReply erc20_query = 5;
+    WorkerReply storage_groth16 = 6;
+    WorkerReply v1_preprocessing = 7;
+    WorkerReply v1_query = 8;
+    WorkerReply v1_groth_16 = 9;
   }
 }

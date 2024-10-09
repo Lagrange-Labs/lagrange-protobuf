@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.worker_task_v1_groth16;
+package lagrange.v1.groth16;
 
 message WorkerTask {
   // TODO: unify with another one

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package lagrange.worker_task_rec_proof;
+package lagrange.experimental.rec_proof;
 
 import "google/protobuf/empty.proto";
 
@@ -42,4 +42,10 @@ message WorkerTask {
 
   WorkerTaskType task_type = 1;
   Experiment experiment = 2;
+}
+
+message WorkerReply {
+  string query_id = 1;
+
+  string task_id = 2;
 }
