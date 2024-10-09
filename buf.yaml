@@ -5,9 +5,9 @@ modules:
 lint:
   ignore_only:
     PACKAGE_DIRECTORY_MATCH:
-      - lagrange.proto
+      - proto/lagrange.proto
     PACKAGE_VERSION_SUFFIX:
-      - lagrange.proto
+      - proto/lagrange.proto
 breaking:
   use:
     - FILE
