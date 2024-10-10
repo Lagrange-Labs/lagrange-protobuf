@@ -2,27 +2,17 @@ syntax = "proto3";
 
 package lagrange;
 
-import "lagrange/erc20_query/v1/erc20_query.proto";
 import "lagrange/experimental/rec_proof/v1/rec_proof.proto";
 import "lagrange/experimental/tx_trie/v1/tx_trie.proto";
 import "lagrange/groth16/v1/groth16.proto";
-import "lagrange/groth16/v2/groth16.proto";
 import "lagrange/preprocessing/v1/preprocessing.proto";
-import "lagrange/preprocessing/v2/preprocessing.proto";
 import "lagrange/query/v1/query.proto";
-import "lagrange/query/v2/query.proto";
 
 message TaskType {
   oneof task_type {
-    lagrange.experimental.tx_trie.v1.WorkerTask tx_trie = 1;
-    lagrange.experimental.rec_proof.v1.WorkerTask rec_proof = 2;
-    lagrange.preprocessing.v1.WorkerTask storage_process = 3;
-    lagrange.query.v1.WorkerTask storage_query = 4;
-    lagrange.erc20_query.v1.WorkerTask erc20_query = 5;
-    lagrange.groth16.v1.WorkerTask storage_groth16 = 6;
-    lagrange.preprocessing.v2.WorkerTask v1_preprocessing = 7;
-    lagrange.query.v2.WorkerTask v1_query = 8;
-    lagrange.groth16.v2.WorkerTask v1_groth16 = 9;
+    lagrange.preprocessing.v1.WorkerTask v1_preprocessing = 1;
+    lagrange.query.v1.WorkerTask v1_query = 2;
+    lagrange.groth16.v1.WorkerTask v1_groth16 = 3;
   }
 }
 
