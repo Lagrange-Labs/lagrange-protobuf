@@ -3,115 +3,58 @@ syntax = "proto3";
 package lagrange.query.v1;
 
 message WorkerTask {
-  message WorkerTaskType {
-    message Position {
-      uint64 level = 1;
-      uint64 index = 2;
+  message PlaceHolderLgn {
+    map<string, bytes> placeholder = 1;
+  }
+  message ProofKey {
+    message Row {
+      string query_id = 1;
+      uint64 block_number = 2;
+      string row_key_id = 3;
     }
 
-    message StorageData {
-      message StorageDetails {
-        message Leaf {
-          bytes leaf = 1;
-          bytes value = 2;
-        }
-        message FullBranch {}
-
-        message PartialBranch {
-          Position proven_child_position = 1;
-          bytes unproven_child_hash = 2;
-        }
-      }
-      message StorageProofInput {
-        message Leaf {
-          bytes key = 1;
-          bytes value = 2;
-        }
-        message FullBranch {
-          bytes left_child_proof = 1;
-          bytes right_child_proof = 2;
-        }
-        message PartialBranch {
-          bytes proven_child = 1;
-          bytes unproven_child_hash = 2;
-          bool right_is_unproven = 3;
-        }
-
-        oneof input {
-          Leaf leaf = 1;
-          FullBranch full_branch = 2;
-          PartialBranch partial_branch = 3;
-        }
-      }
-
-      uint64 block_number = 1;
-      Position position = 2;
-      StorageDetails details = 3;
-      StorageProofInput inputs = 4;
-    }
-    message QueryStateData {
-      message PositionAndHash {
-        Position position = 1;
-        bytes hash = 2;
-      }
-
-      bytes smart_contract_address = 1;
-      uint32 mapping_slot = 2;
-      uint32 length_slot = 3;
-      uint64 block_number = 4;
-      bytes block_hash = 5;
-      bytes hash_root = 6;
-      repeated PositionAndHash proof = 7;
-      Position storage_root_position = 8;
-      bytes storage_proof = 9;
-    }
-    message QueryBlockData {
-      message BlockNodeLeafInfo {
-        oneof info {
-          uint64 state_proof = 1;
-          Position aggregation = 2;
-        }
-      }
-      message PartialNodeBlockData {
-        Position position = 1;
-        BlockNodeLeafInfo child_info = 2;
-        bytes sibling_hash = 3;
-        Position sibling_position = 4;
-        bytes child_proof = 5;
-      }
-      message FullNodeBlockData {
-        Position position = 1;
-        BlockNodeLeafInfo left_child_info = 2;
-        BlockNodeLeafInfo right_child_info = 3;
-
-        bytes left_child_proof = 4;
-        bytes right_child_proof = 5;
-      }
-
-      oneof data {
-        PartialNodeBlockData partial_node_block_data = 1;
-        FullNodeBlockData full_node_block_data = 2;
-      }
-    }
-    message RevelationData {
-      repeated bytes mapping_keys = 1;
-      uint64 query_min_block = 2;
-      uint64 query_max_block = 3;
-      Position query2_proof_position = 4;
-      uint64 block_db_proof_block_number = 5;
-      uint64 block_db_proof_block_leaf_index = 6;
-      bytes query2_proof = 7;
-      bytes block_db_proof = 8;
+    message Index {
+      string query_id = 1;
+      uint64 block_number = 2;
     }
 
-    oneof task_type {
-      StorageData storage_entry = 1;
-      QueryStateData query_state_data = 2;
-      QueryBlockData query_block_data = 3;
-      RevelationData revelation = 4;
+    message Revelation {
+      string query_id = 1;
+    }
+
+    oneof key {
+      Row row = 1;
+      Index index = 2;
+      Revelation revelation = 3;
     }
   }
+
+  message WorkerTaskType {
+    message QueryInput {
+      message QueryStep {
+        message QueryInputPart {
+          ProofKey proof_key = 1;
+        }
+        message RevelationInput {
+          PlaceHolderLgn placeholders = 1;
+          // TODO: db_keys::ProofKey
+          ProofKey indexing_proof_location = 2;
+          ProofKey query_proof_location = 3;
+          bytes indexing_proof = 4;
+          bytes query_proof = 5;
+        }
+      }
+
+      ProofKey proof_key = 1;
+
+      QueryInput query_input = 2;
+    }
+
+    oneof type {
+      QueryInput query_input = 1;
+    }
+  }
+
   uint64 chain_id = 1;
-  string query_id = 2;
-  bytes contract = 3;
+  WorkerTaskType task_type = 2;
 }
