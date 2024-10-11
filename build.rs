@@ -1,4 +1,12 @@
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    tonic_build::compile_protos("proto/lagrange.proto")?;
+use miette::IntoDiagnostic;
+
+fn main() -> miette::Result<()> {
+    let file_descriptors = protox::compile(["proto/lagrange.proto"], ["proto"])?;
+
+    tonic_build::configure()
+        .build_server(true)
+        .compile_fds(file_descriptors)
+        .into_diagnostic()?;
+
     Ok(())
 }
