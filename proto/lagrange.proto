@@ -54,42 +54,35 @@ message DownstreamPayload {
   }
 }
 
-service WorkersService {
-  // A bidirectional streaming RPC between GW<->Worker
-  rpc WorkerToGw(stream ReplyType) returns (stream DownstreamPayload) {}
+// A message sent by the prover at the beginning of connection to the GW
+// Contains fields that were previously communicated via JWT claims.
+message WorkerReady {
+  // Version of the worker. Should follow SemVer format.
+  string version = 1;
+
+  // Class of the worker.
+  string worker_class = 2;
 }
 
-message ReplyType {
-  enum ProofCathegory {
-    PROOF_CATHEGORY_UNSPECIFIED = 0;
-    PROOF_CATHEGORY_INDEXING = 1;
-    PROOF_CATHEGORY_QUERYING = 2;
+message UpstreamPayload {
+  oneof payload {
+    WorkerReady worker_ready = 1;
+    WorkerDone worker_done = 2;
   }
-  message KeyedPayload {
-    map<string, bytes> payload = 1;
-  }
-  message WorkerReply {
-    uint64 chain_id = 1;
+}
 
-    KeyedPayload proof = 2;
+service WorkersService {
+  // A bidirectional streaming RPC between GW<->Worker
+  rpc WorkerToGw(stream UpstreamPayload) returns (stream DownstreamPayload) {}
+}
 
-    ProofCathegory proof_type = 3;
-  }
+message WorkerDone {
+  string query_id = 1;
 
-  message StoragePreprocess {
-    uint64 p = 1;
-    WorkerReply worker_reply = 2;
-  }
+  string task_id = 2;
 
-  oneof reply_type {
-    lagrange.experimental.tx_trie.v1.WorkerReply tx_trie = 1;
-    lagrange.experimental.rec_proof.v1.WorkerReply rec_proof = 2;
-    StoragePreprocess storage_preprocess = 3;
-    WorkerReply storage_query = 4;
-    WorkerReply erc20_query = 5;
-    WorkerReply storage_groth16 = 6;
-    WorkerReply v1_preprocessing = 7;
-    WorkerReply v1_query = 8;
-    WorkerReply v1_groth_16 = 9;
+  oneof reply {
+    string reply_string = 3;
+    string worker_error = 4;
   }
 }
