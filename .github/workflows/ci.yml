@@ -20,3 +20,10 @@ jobs:
 
     - name: Run buf-build checks
       uses: bufbuild/buf-action@v1
+      with:
+        # Only setup and custom commands to avoid logging into BSR
+        # and publishing the schemas for the timebeing
+        setup_only: true
+        lint: true
+        breaking: true
+        format: true
