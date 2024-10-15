@@ -2,94 +2,41 @@ syntax = "proto3";
 
 package lagrange;
 
-import "lagrange/experimental/rec_proof/v1/rec_proof.proto";
-import "lagrange/experimental/tx_trie/v1/tx_trie.proto";
-import "lagrange/groth16/v1/groth16.proto";
-import "lagrange/preprocessing/v1/preprocessing.proto";
-import "lagrange/query/v1/query.proto";
-
-message TaskType {
-  oneof task_type {
-    lagrange.preprocessing.v1.WorkerTask v1_preprocessing = 1;
-    lagrange.query.v1.WorkerTask v1_query = 2;
-    lagrange.groth16.v1.WorkerTask v1_groth16 = 3;
+message WorkerToGwResponse {
+  oneof response {
+    string todo = 1;
   }
 }
 
-message MessageEnvelope {
-  message RoutingKey {
-    string domain = 1;
-    uint64 priority = 2;
-  }
-  /// Query id is unique for each query and shared between all its tasks
-  string query_id = 1;
+// A message sent by the prover at the beginning of connection to the GW
+// Contains fields that were previously communicated via JWT claims.
+message WorkerReady {
+  // Version of the worker. Should follow SemVer format.
+  string version = 1;
 
-  /// Task id is unique for each task and helps to map replies to tasks
-  string task_id = 2;
-
-  /// Task id referenced in the DB tasks table
-  /// TODO: optional?
-  int32 db_task_id = 3;
-
-  /// Estimate how long it takes this task to finish.
-  /// This includes may factors like: redis queue current length, workers count, parallel queries count, etc.
-  /// Ideally assigned by an "intelligent" algorithm. Not important for now though.
-  /// Might become relevant then we have clients waiting for results, and we can process queries
-  /// relatively fast.
-  uint64 rtt = 4;
-
-  /// How much work prover has to do
-  uint64 gas = 5;
-
-  /// How and where to route the message.
-  RoutingKey routing_key = 6;
-
-  /// Details of the task to be executed.
-  TaskType inner = 7;
+  // Class of the worker.
+  string worker_class = 2;
 }
 
-message DownstreamPayload {
-  oneof downstream_payload {
-    MessageEnvelope todo = 1;
+message WorkerToGwRequest {
+  oneof request {
+    WorkerReady worker_ready = 1;
+    WorkerDone worker_done = 2;
   }
 }
 
 service WorkersService {
   // A bidirectional streaming RPC between GW<->Worker
-  rpc WorkerToGw(stream ReplyType) returns (stream DownstreamPayload) {}
+  rpc WorkerToGw(stream WorkerToGwRequest) returns (stream WorkerToGwResponse) {}
 }
 
-message ReplyType {
-  enum ProofCathegory {
-    PROOF_CATHEGORY_UNSPECIFIED = 0;
-    PROOF_CATHEGORY_INDEXING = 1;
-    PROOF_CATHEGORY_QUERYING = 2;
-  }
-  message KeyedPayload {
-    map<string, bytes> payload = 1;
-  }
-  message WorkerReply {
-    uint64 chain_id = 1;
+message WorkerDone {
+  string query_id = 1;
 
-    KeyedPayload proof = 2;
+  string task_id = 2;
 
-    ProofCathegory proof_type = 3;
-  }
-
-  message StoragePreprocess {
-    uint64 p = 1;
-    WorkerReply worker_reply = 2;
-  }
-
-  oneof reply_type {
-    lagrange.experimental.tx_trie.v1.WorkerReply tx_trie = 1;
-    lagrange.experimental.rec_proof.v1.WorkerReply rec_proof = 2;
-    StoragePreprocess storage_preprocess = 3;
-    WorkerReply storage_query = 4;
-    WorkerReply erc20_query = 5;
-    WorkerReply storage_groth16 = 6;
-    WorkerReply v1_preprocessing = 7;
-    WorkerReply v1_query = 8;
-    WorkerReply v1_groth_16 = 9;
+  oneof reply {
+    string reply_string = 3;
+    string worker_error = 4;
   }
 }
