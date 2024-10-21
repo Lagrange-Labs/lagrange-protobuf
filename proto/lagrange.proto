@@ -31,12 +31,8 @@ service WorkersService {
 }
 
 message WorkerDone {
-  string query_id = 1;
-
-  string task_id = 2;
-
   oneof reply {
-    string reply_string = 3;
-    string worker_error = 4;
+    string reply_string = 1;
+    string worker_error = 2;
   }
 }
