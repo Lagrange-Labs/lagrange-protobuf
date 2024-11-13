@@ -36,3 +36,20 @@ message WorkerDone {
     string worker_error = 2;
   }
 }
+
+
+message SubmitTaskRequest {
+  oneof request {
+    string task = 1;
+  }
+}
+
+message SubmitTaskResponse {
+  oneof reply {
+    string reply_string = 1;
+  }
+}
+
+service ClientsService {
+  rpc ClientToGw(stream SubmitTaskRequest) returns (stream SubmitTaskResponse) {}
+}
