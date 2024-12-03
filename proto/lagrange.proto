@@ -59,9 +59,18 @@ message SubmitTaskResponse {
   UUID task_uuid = 2;
 }
 
-message ProofChannelRequest {
+message AckedMessages {
   repeated UUID acked_messages = 1;
+}
+
+message SubscribeToMessages {
   repeated UUID subscribe_to_messages = 2;
+}
+message ProofChannelRequest {
+  oneof request {
+    AckedMessages acked_messages = 1;
+    SubscribeToMessages subscribe_to_messages = 2;
+  }
 }
 
 message ProofChannelResponse {}
