@@ -5,6 +5,7 @@ package lagrange;
 import "google/protobuf/timestamp.proto";
 
 message WorkerToGwResponse {
+  UUID task_id;
   oneof response {
     string todo = 1;
   }
@@ -33,6 +34,7 @@ service WorkersService {
 }
 
 message WorkerDone {
+  UUID task_id;
   oneof reply {
     string reply_string = 1;
     string worker_error = 2;
