@@ -6,9 +6,7 @@ import "google/protobuf/timestamp.proto";
 
 message WorkerToGwResponse {
   UUID task_id = 1;
-  oneof response {
-    string todo = 2;
-  }
+  bytes task = 2;
 }
 
 // A message sent by the prover at the beginning of connection to the GW
@@ -16,7 +14,6 @@ message WorkerToGwResponse {
 message WorkerReady {
   // Version of the worker. Should follow SemVer format.
   string version = 1;
-
   // Class of the worker.
   string worker_class = 2;
 }
@@ -36,7 +33,7 @@ service WorkersService {
 message WorkerDone {
   UUID task_id = 1;
   oneof reply {
-    string reply_string = 2;
+    bytes task_output = 2;
     string worker_error = 3;
   }
 }
