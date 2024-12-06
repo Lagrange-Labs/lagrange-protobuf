@@ -65,6 +65,7 @@ message AckedMessages {
 message SubscribeToMessages {
   repeated UUID subscribe_to_messages = 2;
 }
+
 message ProofChannelRequest {
   oneof request {
     AckedMessages acked_messages = 1;
@@ -72,7 +73,16 @@ message ProofChannelRequest {
   }
 }
 
-message ProofChannelResponse {}
+message ProofReady {
+  UUID task_id = 1;
+  bytes task_output = 2;
+}
+
+message ProofChannelResponse {
+  oneof response {
+    ProofReady proof = 1;
+  }
+}
 
 service ClientsService {
   rpc SubmitTask(SubmitTaskRequest) returns (SubmitTaskResponse) {}
