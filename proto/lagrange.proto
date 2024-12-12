@@ -52,9 +52,6 @@ message SubmitTaskRequest {
 }
 
 message SubmitTaskResponse {
-  oneof reply {
-    string reply_string = 1;
-  }
   UUID task_uuid = 2;
 }
 
