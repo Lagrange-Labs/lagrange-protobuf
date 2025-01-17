@@ -44,11 +44,17 @@ message UUID {
 
 message SubmitTaskRequest {
   bytes task_bytes = 1;
+
   // friendly name of a task for logging and tracing
   string user_task_id = 2;
+
   google.protobuf.Duration timeout = 3;
+
   bytes price_requested = 4;
   string class = 5;
+
+  // BE-encoded `U256`.
+  bytes stake_requested = 6;
 }
 
 message SubmitTaskResponse {
