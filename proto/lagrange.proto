@@ -55,6 +55,9 @@ message SubmitTaskRequest {
 
   // BE-encoded `U256`.
   bytes stake_requested = 6;
+
+  // Priority of the task
+  uint64 priority = 7;
 }
 
 message SubmitTaskResponse {
