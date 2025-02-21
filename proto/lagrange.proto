@@ -51,7 +51,7 @@ message SubmitTaskRequest {
   google.protobuf.Duration timeout = 3;
 
   bytes price_requested = 4;
-  string class = 5;
+  repeated string class = 5;
 
   // BE-encoded `U256`.
   bytes stake_requested = 6;
