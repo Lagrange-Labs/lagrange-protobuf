@@ -2,10 +2,11 @@ syntax = "proto3";
 
 package lagrange;
 
+import "google/protobuf/duration.proto";
+
 message WorkerToGwResponse {
-  oneof response {
-    string todo = 1;
-  }
+  UUID task_id = 1;
+  bytes task = 2;
 }
 
 // A message sent by the prover at the beginning of connection to the GW
@@ -13,7 +14,6 @@ message WorkerToGwResponse {
 message WorkerReady {
   // Version of the worker. Should follow SemVer format.
   string version = 1;
-
   // Class of the worker.
   string worker_class = 2;
 }
@@ -31,25 +31,66 @@ service WorkersService {
 }
 
 message WorkerDone {
+  UUID task_id = 1;
   oneof reply {
-    string reply_string = 1;
-    string worker_error = 2;
+    bytes task_output = 2;
+    string worker_error = 3;
   }
 }
 
+message UUID {
+  bytes id = 1;
+}
 
 message SubmitTaskRequest {
-  oneof request {
-    string task = 1;
-  }
+  bytes task_bytes = 1;
+
+  // friendly name of a task for logging and tracing
+  string user_task_id = 2;
+
+  google.protobuf.Duration timeout = 3;
+
+  bytes price_requested = 4;
+  repeated string class = 5;
+
+  // BE-encoded `U256`.
+  bytes stake_requested = 6;
+
+  // Priority of the task
+  uint64 priority = 7;
 }
 
 message SubmitTaskResponse {
-  oneof reply {
-    string reply_string = 1;
+  UUID task_uuid = 2;
+}
+
+message AckedMessages {
+  repeated UUID acked_messages = 1;
+}
+
+message SubscribeToMessages {
+  repeated UUID subscribe_to_messages = 2;
+}
+
+message ProofChannelRequest {
+  oneof request {
+    AckedMessages acked_messages = 1;
+    SubscribeToMessages subscribe_to_messages = 2;
+  }
+}
+
+message ProofReady {
+  UUID task_id = 1;
+  bytes task_output = 2;
+}
+
+message ProofChannelResponse {
+  oneof response {
+    ProofReady proof = 1;
   }
 }
 
 service ClientsService {
-  rpc ClientToGw(stream SubmitTaskRequest) returns (stream SubmitTaskResponse) {}
+  rpc SubmitTask(SubmitTaskRequest) returns (SubmitTaskResponse) {}
+  rpc ProofChannel(stream ProofChannelRequest) returns (stream ProofChannelResponse) {}
 }
